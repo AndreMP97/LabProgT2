@@ -1,19 +1,23 @@
 import string
 import re
 import sys
+import operator
 
-#g = []
+l = []
 k = 0
 conta = 0
+res = 0
+op = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.div}
 
 def shell(prompt):
     while (True):
-        res = (input(prompt))
-        if res is not None:
-            print(res)
-            return res
+        str = (input(prompt))
+        if str is not None:
+            print(str)
+            return str
         else:
             print('ERRO!')
+            return None
 
 def tokenize(expr):
     expr = expr.replace('(', ' ( ')
@@ -32,7 +36,7 @@ def isNum(s):
         except ValueError:
             return s
 
-def parseaux(i,tokens):
+def parseaux(i, tokens):
     global k
     global conta
     tup = ()
@@ -57,18 +61,43 @@ def parse(tokens, j):
             if t != '()':
                 g += [t]
         j += k + 1
+    print(g)
     return g
 
-#def avalia(tuples):
-
-
+def avalia(tuples):
+    global l
+    global res
+    global op
+    i = 0
+    temp = 0
+    while (i < len(tuples)):
+        if (isinstance(tuples[i], tuple)):
+            avalia(tuples[i])
+        elif (tuples[i] == 'define'):
+            l += [(tuples[i+1], tuples[i+2])]
+            res = tuples[i+2]
+            print(l)
+        elif (isinstance(tuples[i], int) and tuples[i-2] != 'define'):
+            temp = tuples[i]
+            print(temp)
+        elif (isinstance(tuples[i], float) and tuples[i-2] != 'define'):
+            temp = tuples[i]
+        elif (tuples[i] in op):
+            getop = tuples[i]
+            print (tuples[i])
+        elif (tuples[i] == l[0][0] and tuples[i-1] != 'define'):
+            res = op[getop](res,temp)
+            print("res = ", res)
+        i += 1
+    return temp
 #parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
-str = shell('expression: ')
+#str = shell('expression: ')
 expr = "(define x 5) ( + (* 2 x) 7)"
 print (expr)
 print (tokenize(expr))
 tokens = tokenize(expr)
-print (parse(tokens,0))
+#print (parse(tokens,0))
+print(avalia(parse(tokens,0)))
 k = 0
 expr2 = '(define f(lambda x (+ x 2)))'
 print (expr2)
