@@ -1,17 +1,19 @@
 import string
 import re
+import sys
 
 #g = []
 k = 0
 conta = 0
 
-'''def shell(prompt = 'expressao: '):
+def shell(prompt):
     while (True):
-        res = parse(tokenize(input(prompt)), k)
-    if res is not None:
-        print(res)
-    else:
-        print('ERRO!')'''
+        res = (input(prompt))
+        if res is not None:
+            print(res)
+            return res
+        else:
+            print('ERRO!')
 
 def tokenize(expr):
     expr = expr.replace('(', ' ( ')
@@ -61,6 +63,7 @@ def parse(tokens, j):
 
 
 #parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
+str = shell('expression: ')
 expr = "(define x 5) ( + (* 2 x) 7)"
 print (expr)
 print (tokenize(expr))
