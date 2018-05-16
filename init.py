@@ -7,6 +7,7 @@ l = []
 k = 0
 conta = 0
 res = 0
+flag = 0
 op = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}
 
 def shell(prompt):
@@ -19,13 +20,17 @@ def shell(prompt):
             exit()
 
 def interpreta(expr):
+    global flag
     tokens = tokenize(expr)
     check(tokens)
     print("Tokenize: " + str(list(tokens)))
     tuples = parse(tokens,0)
     print("Parse: " + str(list(tuples)))
     avalia(tuples)
-    print("Resultado = " + str(int(res)))
+    if (flag == 0):
+        print("Resultado = " + str(int(res)))
+    else:
+        print("Resultado = " + str(float(res)))
 
 def check(tokens):
     c1 = 0
@@ -93,6 +98,7 @@ def avalia(tuples):
     global l
     global res
     global op
+    global flag
     i = 0
     temp = 0
     a = 0
@@ -108,6 +114,7 @@ def avalia(tuples):
             res = op[getop](res,temp)
         elif isinstance(tuples[i], float) and tuples[i-2] != 'define':
             temp = tuples[i]
+            flag = 1
             res = op[getop](res,temp)
         elif tuples[i] in op:
             getop = tuples[i]
