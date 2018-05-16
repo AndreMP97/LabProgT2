@@ -1,3 +1,5 @@
+#falta implementar '(define f(lambda x (+ x 2)))' e apresentar erro caso apareca uma variavel que nao esta na tabela
+
 import string
 import re
 import sys
