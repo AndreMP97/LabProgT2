@@ -20,12 +20,25 @@ def shell(prompt):
             return None
 
 def tokenize(expr):
+    c1 = 0
+    c2 = 0
+    for i in xrange(0,len(expr)):
+        if expr[i] == '(':
+            c1 += 1
+        elif expr[i] == ')':
+            c2 += 1
+    if (c1 > c2):
+        print("ERROR: Existe mais '(' do que ')'");
+        exit()
+    elif (c2 > c1):
+        print("ERROR: Existe mais ')' do que '('");
+        exit()
     expr = expr.replace('(', ' ( ')
     expr = expr.replace(')', ' ) ')
     tokens = expr.split()
     return tokens
 
-def isNum(s):
+def isNum(s): #verifica se e um inteiro ou um float para fazer parse
     try:
         int(s)
         return int(s)
@@ -58,10 +71,12 @@ def parse(tokens, j):
     while (j < len(tokens)):
         if tokens[j] == '(':
             t = parseaux(j+1,tokens)
-            if t != '()':
+            if t[0] != 'define' and t[0] not in op:
+                print("ERROR: Nao foi possivel fazer parse do tuplo ",t,"porque o primeiro elemento nao e 'define' nem um operador!")
+                exit()
+            elif t != '()':
                 g += [t]
         j += k + 1
-    print(g)
     return g
 
 def avalia(tuples):
@@ -71,39 +86,44 @@ def avalia(tuples):
     i = 0
     temp = 0
     while (i < len(tuples)):
-        if (isinstance(tuples[i], tuple)):
+        if isinstance(tuples[i], tuple):
             avalia(tuples[i])
-        elif (tuples[i] == 'define'):
+        elif tuples[i] == 'define':
             l += [(tuples[i+1], tuples[i+2])]
             res = tuples[i+2]
-            print(l)
-        elif (isinstance(tuples[i], int) and tuples[i-2] != 'define'):
+        elif isinstance(tuples[i], int) and tuples[i-2] != 'define':
             temp = tuples[i]
-            print(temp)
-        elif (isinstance(tuples[i], float) and tuples[i-2] != 'define'):
-            temp = tuples[i]
-        elif (tuples[i] in op):
-            getop = tuples[i]
-            print (tuples[i])
-        elif (tuples[i] == l[0][0] and tuples[i-1] != 'define'):
             res = op[getop](res,temp)
-            print("res = ", res)
+        elif isinstance(tuples[i], float) and tuples[i-2] != 'define':
+            temp = tuples[i]
+            res = op[getop](res,temp)
+        elif tuples[i] in op:
+            getop = tuples[i]
+        #elif (tuples[i] == for a, b in l[a][b]) and tuples[i-1] != 'define'):
+            #print("entrou")
+            #res = op[getop](res,temp)
+            #print("res = ", res)
+        print("debug: ",tuples[i])
         i += 1
-    return temp
+    #print("Resultado = ", res)
 #parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
 #str = shell('expression: ')
-expr = "(define x 5) ( + (* 2 x) 7)"
-print (expr)
-print (tokenize(expr))
+#expr = "(define x 5) ( + (* 2 x) 7)"
+expr = "(define x 5) (define y 2) (+ x y)"
+print ("expr = " + expr)
 tokens = tokenize(expr)
+print("tokens = ", tokens)
+tuples = parse(tokens,0)
+print("parse = ", tuples)
 #print (parse(tokens,0))
-print(avalia(parse(tokens,0)))
-k = 0
-expr2 = '(define f(lambda x (+ x 2)))'
-print (expr2)
-print (tokenize(expr2))
-tokens2 = tokenize(expr2)
-print (parse(tokens2,0))
+avalia(tuples)
+print("res = ", res)
+#k = 0
+#expr2 = '(define f(lambda x (+ x 2)))'
+#print (expr2)
+#print (tokenize(expr2))
+#tokens2 = tokenize(expr2)
+#print (parse(tokens2,0))
 #isinstance(x,int)
 #isinstance(x,float)
 #isinstance(x,symbol)
