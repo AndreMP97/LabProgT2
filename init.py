@@ -16,8 +16,16 @@ def shell(prompt):
             print(str)
             return str
         else:
-            print('ERRO!')
-            return None
+            print('ERROR: String vazia!')
+            exit()
+
+def interpreta(expr):
+    tokens = tokenize(expr)
+    print("Tokenize: " + str(list(tokens)))
+    tuples = parse(tokens,0)
+    print("Parse: " + str(list(tuples)))
+    avalia(tuples)
+    print("Resultado = " + str(int(res)))
 
 def tokenize(expr):
     c1 = 0
@@ -56,6 +64,9 @@ def parseaux(i, tokens):
     while tokens[i] != ')':
         if tokens[i] == '(':
             #criar um tuplo dentro do tuplo caso encontre um novo '('
+            if tokens[i+1] != 'define' and tokens[i+1] not in op:
+                print("ERROR: Nao foi possivel fazer parse dos tokens porque o primeiro elemento a construir no tuplo nao e 'define' ou um operador artimetrico")
+                exit()
             conta = 0
             tup += (parseaux(i+1, tokens), )
             k += conta #variavel global que conta o numero de elementos apos '(' de modo a atualizar o j na funcao parse
@@ -68,13 +79,16 @@ def parseaux(i, tokens):
 
 def parse(tokens, j):
     g = []
-    while (j < len(tokens)):
+    if tokens[1] != 'define':
+        print("ERROR: Nao foi possivel fazer parse dos tokens porque a primeira instrucao nao e 'define'")
+        exit()
+    while j < len(tokens):
         if tokens[j] == '(':
-            t = parseaux(j+1,tokens)
-            if t[0] != 'define' and t[0] not in op:
-                print("ERROR: Nao foi possivel fazer parse do tuplo ",t,"porque o primeiro elemento nao e 'define' nem um operador!")
+            if tokens[j+1] != 'define' and tokens[j+1] not in op:
+                print("ERROR: Nao foi possivel fazer parse dos tokens porque o primeiro elemento a construir no tuplo nao e 'define' ou um operador artimetrico")
                 exit()
-            elif t != '()':
+            t = parseaux(j+1,tokens)
+            if t != '()':
                 g += [t]
         j += k + 1
     return g
@@ -103,21 +117,23 @@ def avalia(tuples):
             #print("entrou")
             #res = op[getop](res,temp)
             #print("res = ", res)
-        print("debug: ",tuples[i])
+        #print("debug: ",tuples[i])
         i += 1
     #print("Resultado = ", res)
 #parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
 #str = shell('expression: ')
-#expr = "(define x 5) ( + (* 2 x) 7)"
-expr = "(define x 5) (define y 2) (+ x y)"
-print ("expr = " + expr)
-tokens = tokenize(expr)
-print("tokens = ", tokens)
-tuples = parse(tokens,0)
-print("parse = ", tuples)
+expr = "(define x 5) ( + (* 2 x) 7)"
+interpreta(expr)
+#expr = '(define f(lambda x (+ x 2)))'
+#expr = "(define x 5) (define y 2) (1 x y))"
+#print ("expr = " + expr)
+#tokens = tokenize(expr)
+#print("tokens = ", tokens)
+#tuples = parse(tokens,0)
+#print("parse = ", tuples)
 #print (parse(tokens,0))
-avalia(tuples)
-print("res = ", res)
+#avalia(tuples)
+#print("res = " + str(int(res)))
 #k = 0
 #expr2 = '(define f(lambda x (+ x 2)))'
 #print (expr2)
