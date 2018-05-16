@@ -7,13 +7,12 @@ l = []
 k = 0
 conta = 0
 res = 0
-op = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.div}
+op = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}
 
 def shell(prompt):
     while (True):
         str = (input(prompt))
         if str is not None:
-            print(str)
             return str
         else:
             print('ERROR: String vazia!')
@@ -21,19 +20,23 @@ def shell(prompt):
 
 def interpreta(expr):
     tokens = tokenize(expr)
+    check(tokens)
     print("Tokenize: " + str(list(tokens)))
     tuples = parse(tokens,0)
     print("Parse: " + str(list(tuples)))
     avalia(tuples)
     print("Resultado = " + str(int(res)))
 
-def tokenize(expr):
+def check(tokens):
     c1 = 0
     c2 = 0
-    for i in xrange(0,len(expr)):
-        if expr[i] == '(':
+    for i in range(0,len(tokens)):
+        if tokens[i] == '(':
             c1 += 1
-        elif expr[i] == ')':
+            if tokens[i+1] != 'define' and tokens[i+1] not in op:
+                print("ERROR: Nao foi possivel fazer parse dos tokens porque o elemento a seguir a '(' na string '"+str(tokens[i])+str(tokens[i+1])+"' nao e 'define' ou um operador artimetrico")
+                exit()
+        elif tokens[i] == ')':
             c2 += 1
     if (c1 > c2):
         print("ERROR: Existe mais '(' do que ')'");
@@ -41,6 +44,8 @@ def tokenize(expr):
     elif (c2 > c1):
         print("ERROR: Existe mais ')' do que '('");
         exit()
+
+def tokenize(expr):
     expr = expr.replace('(', ' ( ')
     expr = expr.replace(')', ' ) ')
     tokens = expr.split()
@@ -64,9 +69,6 @@ def parseaux(i, tokens):
     while tokens[i] != ')':
         if tokens[i] == '(':
             #criar um tuplo dentro do tuplo caso encontre um novo '('
-            if tokens[i+1] != 'define' and tokens[i+1] not in op:
-                print("ERROR: Nao foi possivel fazer parse dos tokens porque o primeiro elemento a construir no tuplo nao e 'define' ou um operador artimetrico")
-                exit()
             conta = 0
             tup += (parseaux(i+1, tokens), )
             k += conta #variavel global que conta o numero de elementos apos '(' de modo a atualizar o j na funcao parse
@@ -79,14 +81,8 @@ def parseaux(i, tokens):
 
 def parse(tokens, j):
     g = []
-    if tokens[1] != 'define':
-        print("ERROR: Nao foi possivel fazer parse dos tokens porque a primeira instrucao nao e 'define'")
-        exit()
     while j < len(tokens):
         if tokens[j] == '(':
-            if tokens[j+1] != 'define' and tokens[j+1] not in op:
-                print("ERROR: Nao foi possivel fazer parse dos tokens porque o primeiro elemento a construir no tuplo nao e 'define' ou um operador artimetrico")
-                exit()
             t = parseaux(j+1,tokens)
             if t != '()':
                 g += [t]
@@ -122,7 +118,8 @@ def avalia(tuples):
     #print("Resultado = ", res)
 #parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
 #str = shell('expression: ')
-expr = "(define x 5) ( + (* 2 x) 7)"
+#expr = "(define x 5) ( + (* 2 x) 7)"
+expr = shell('expressao: ')
 interpreta(expr)
 #expr = '(define f(lambda x (+ x 2)))'
 #expr = "(define x 5) (define y 2) (1 x y))"
