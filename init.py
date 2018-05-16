@@ -95,12 +95,14 @@ def avalia(tuples):
     global op
     i = 0
     temp = 0
+    a = 0
+    b = 0
     while (i < len(tuples)):
         if isinstance(tuples[i], tuple):
             avalia(tuples[i])
         elif tuples[i] == 'define':
             l += [(tuples[i+1], tuples[i+2])]
-            res = tuples[i+2]
+            #res = tuples[i+2]
         elif isinstance(tuples[i], int) and tuples[i-2] != 'define':
             temp = tuples[i]
             res = op[getop](res,temp)
@@ -109,38 +111,17 @@ def avalia(tuples):
             res = op[getop](res,temp)
         elif tuples[i] in op:
             getop = tuples[i]
-        #elif (tuples[i] == for a, b in l[a][b]) and tuples[i-1] != 'define'):
-            #print("entrou")
-            #res = op[getop](res,temp)
-            #print("res = ", res)
-        #print("debug: ",tuples[i])
+        elif tuples[i] == l[0][0] and tuples[i-1] != 'define':
+            res = op[getop](l[0][1],temp)
+        elif [a for a, b in l if tuples[i] == a] and tuples[i-1] != 'define':
+            a = 0
+            while (a < len(l)):
+                if tuples[i] == l[a][0]:
+                    b = l[a][1]
+                a += 1
+            temp = b
+            res = op[getop](res,temp)
         i += 1
-    #print("Resultado = ", res)
-#parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
-#str = shell('expression: ')
-#expr = "(define x 5) ( + (* 2 x) 7)"
+
 expr = shell('expressao: ')
 interpreta(expr)
-#expr = '(define f(lambda x (+ x 2)))'
-#expr = "(define x 5) (define y 2) (1 x y))"
-#print ("expr = " + expr)
-#tokens = tokenize(expr)
-#print("tokens = ", tokens)
-#tuples = parse(tokens,0)
-#print("parse = ", tuples)
-#print (parse(tokens,0))
-#avalia(tuples)
-#print("res = " + str(int(res)))
-#k = 0
-#expr2 = '(define f(lambda x (+ x 2)))'
-#print (expr2)
-#print (tokenize(expr2))
-#tokens2 = tokenize(expr2)
-#print (parse(tokens2,0))
-#isinstance(x,int)
-#isinstance(x,float)
-#isinstance(x,symbol)
-#parse aux chamar recursivamente listas para formar tuplos ex: ['(','123',')','(','234',')'] = ((123),['(','234',')'])
-#try return int (x); if not create exception
-#(define f(lambda x (+ x 2))) = ['(','define','f','(','lambda','x','(','+','x','2',')',')',')']
-# [('define', 'f')]

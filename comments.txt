@@ -1,0 +1,30 @@
+#parse retorna lista apos parentesis, se o parse aux descobre parentisis chama parse, e necessario um contador
+#str = shell('expression: ')
+#expr = "(define x 5) ( + (* 2 x) 7)"
+#expr = "(define x 5) (define y 7) ( + (* 2 x) y)"
+#expr = "(define x 5) (define y 2) (define z 3) (+ (+ y x) z)"
+#expr = "(define x 5) (define y 2) (+ y x)"
+expr = shell('expressao: ')
+interpreta(expr)
+#expr = '(define f(lambda x (+ x 2)))'
+#print ("expr = " + expr)
+#tokens = tokenize(expr)
+#print("tokens = ", tokens)
+#tuples = parse(tokens,0)
+#print("parse = ", tuples)
+#print (parse(tokens,0))
+#avalia(tuples)
+#print("res = " + str(int(res)))
+#k = 0
+#expr2 = '(define f(lambda x (+ x 2)))'
+#print (expr2)
+#print (tokenize(expr2))
+#tokens2 = tokenize(expr2)
+#print (parse(tokens2,0))
+#isinstance(x,int)
+#isinstance(x,float)
+#isinstance(x,symbol)
+#parse aux chamar recursivamente listas para formar tuplos ex: ['(','123',')','(','234',')'] = ((123),['(','234',')'])
+#try return int (x); if not create exception
+#(define f(lambda x (+ x 2))) = ['(','define','f','(','lambda','x','(','+','x','2',')',')',')']
+# [('define', 'f')]
