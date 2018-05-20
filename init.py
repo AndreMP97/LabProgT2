@@ -23,16 +23,16 @@ def interpreta(expr):
     global flag
     tokens = tokenize(expr)
     check(tokens)
-    print("Tokenize: " + str(list(tokens)))
     tuples = parse(tokens,0)
-    print("Parse: " + str(list(tuples)))
     avalia(tuples)
+    print("Tokenize: " + str(list(tokens)))
+    print("Parse: " + str(list(tuples)))
     if isinstance(res, int):
         print("Resultado = " + str(int(res)))
     else:
         print("Resultado = " + str(float(res)))
 
-def check(tokens):
+def check(tokens): #verifica erros basicos de construcao da expressao
     c1 = 0
     c2 = 0
     if tokens[0] != '(':
@@ -121,6 +121,9 @@ def avalia(tuples):
         elif isinstance(tuples[i], float) and tuples[i-2] != 'define':
             temp = tuples[i]
             res = op[getop](res,temp)
+        elif tuples[i-1] in op and isinstance(tuples[i],str):
+            print("ERROR: Nao foi possivel avaliar a expressao '"+str(tuples[i-1])+str(tuples[i])+"' porque o elemento a seguir ao operador nao pode ser uma variavel")
+            exit()
         elif tuples[i] in op:
             getop = tuples[i]
         elif tuples[i] == l[0][0] and tuples[i-1] != 'define' and flag != 1:
@@ -134,8 +137,10 @@ def avalia(tuples):
                 a += 1
             temp = b
             res = op[getop](res,temp)
+        elif isinstance(tuples[i],str) and [a for a, b in l if tuples[i] != a] and tuples[i-1] != 'define':
+            print("ERROR: Nao foi possivel avaliar a expressao porque a variavel '"+str(tuples[i])+"' nao esta definida")
+            exit()
         i += 1
 
-#expr = shell('expressao: ')
-expr = "(define x 5) ( + (* 2 x) 7)"
+expr = shell('expressao: ')
 interpreta(expr)
