@@ -83,7 +83,7 @@ def parseaux(i, tokens):
             conta = 0
             tup += (parseaux(i+1, tokens), )
             k += conta #variavel global que conta o numero de elementos apos '(' de modo a atualizar o j na funcao parse
-            i += conta + 1 #atualizar valor i para o elemento a seguir ao '(' que fecha este tuplo
+            i += k + 1 #atualizar valor i para o elemento a seguir ao '(' que fecha este tuplo
         else:
             tup += (isNum(tokens[i]), )
             conta += 1
