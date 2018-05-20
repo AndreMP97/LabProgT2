@@ -1,5 +1,3 @@
-#falta implementar '(define f(lambda x (+ x 2)))' e apresentar erro caso apareca uma variavel que nao esta na tabela
-
 import string
 import re
 import sys
@@ -29,7 +27,7 @@ def interpreta(expr):
     tuples = parse(tokens,0)
     print("Parse: " + str(list(tuples)))
     avalia(tuples)
-    if (flag == 0):
+    if isinstance(res, int):
         print("Resultado = " + str(int(res)))
     else:
         print("Resultado = " + str(float(res)))
@@ -37,6 +35,12 @@ def interpreta(expr):
 def check(tokens):
     c1 = 0
     c2 = 0
+    if tokens[0] != '(':
+        print("ERROR: Primeiro elemento da expressao nao e um '('")
+        exit()
+    elif tokens[len(tokens)-1] != ')':
+        print("ERROR: Ultimo elemento da expressao nao e um ')'")
+        exit()
     for i in range(0,len(tokens)):
         if tokens[i] == '(':
             c1 += 1
@@ -116,11 +120,11 @@ def avalia(tuples):
             res = op[getop](res,temp)
         elif isinstance(tuples[i], float) and tuples[i-2] != 'define':
             temp = tuples[i]
-            flag = 1
             res = op[getop](res,temp)
         elif tuples[i] in op:
             getop = tuples[i]
-        elif tuples[i] == l[0][0] and tuples[i-1] != 'define':
+        elif tuples[i] == l[0][0] and tuples[i-1] != 'define' and flag != 1:
+            flag = 1
             res = op[getop](l[0][1],temp)
         elif [a for a, b in l if tuples[i] == a] and tuples[i-1] != 'define':
             a = 0
@@ -132,5 +136,6 @@ def avalia(tuples):
             res = op[getop](res,temp)
         i += 1
 
-expr = shell('expressao: ')
+#expr = shell('expressao: ')
+expr = "(define x 5) ( + (* 2 x) 7)"
 interpreta(expr)
