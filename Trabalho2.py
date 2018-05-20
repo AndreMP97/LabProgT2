@@ -49,11 +49,11 @@ def check(tokens): #verifica erros basicos de construcao da expressao
                 exit()
         elif tokens[i] == ')':
             c2 += 1
-    if (c1 > c2):
-        print("ERROR: Existe mais '(' do que ')'");
+    if c1 > c2:
+        print("ERROR: Existe mais '(' do que ')'")
         exit()
-    elif (c2 > c1):
-        print("ERROR: Existe mais ')' do que '('");
+    elif c2 > c1:
+        print("ERROR: Existe mais ')' do que '('")
         exit()
 
 def tokenize(expr):
@@ -80,14 +80,22 @@ def parseaux(i, tokens):
     while tokens[i] != ')':
         if tokens[i] == '(':
             #criar um tuplo dentro do tuplo caso encontre um novo '('
-            conta = 0
+            conta = 1
             tup += (parseaux(i+1, tokens), )
             k += conta #variavel global que conta o numero de elementos apos '(' de modo a atualizar o j na funcao parse
-            i += k + 1 #atualizar valor i para o elemento a seguir ao '(' que fecha este tuplo
+            i += k #atualizar valor i para o elemento a seguir ao '(' que fecha este tuplo)
+            if i+1 < len(tokens) and tokens[i+1] == ')':
+                tup += (isNum(tokens[i]), )
+            elif i >= len(tokens):
+                tup += (isNum(tokens[len(tokens)-2]), )
+                i = len(tokens)-2
         else:
             tup += (isNum(tokens[i]), )
             conta += 1
         i += 1
+        if i >= len(tokens):
+            print("ERROR: Ocorreu um erro a gerar os tuplos, verifique a expressao")
+            exit()
     return tup
 
 def parse(tokens, j):
@@ -114,7 +122,6 @@ def avalia(tuples):
             avalia(tuples[i])
         elif tuples[i] == 'define':
             l += [(tuples[i+1], tuples[i+2])]
-            #res = tuples[i+2]
         elif isinstance(tuples[i], int) and tuples[i-2] != 'define':
             temp = tuples[i]
             res = op[getop](res,temp)
