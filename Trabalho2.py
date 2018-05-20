@@ -3,7 +3,7 @@ import re
 import sys
 import operator
 
-l = []
+l = [] #tabela de valores
 k = 0
 conta = 0
 res = 0
