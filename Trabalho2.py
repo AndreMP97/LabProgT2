@@ -8,6 +8,7 @@ k = 0
 conta = 0
 res = 0
 flag = 0
+flag_entrou = 0
 op = {"+": operator.add, "-": operator.sub, "*": operator.mul, "/": operator.truediv}
 
 def shell(prompt):
@@ -76,6 +77,7 @@ def isNum(s): #verifica se e um inteiro ou um float para fazer parse
 def parseaux(i, tokens):
     global k
     global conta
+    global flag_entrou
     tup = ()
     while tokens[i] != ')':
         if tokens[i] == '(':
@@ -84,10 +86,20 @@ def parseaux(i, tokens):
             tup += (parseaux(i+1, tokens), )
             k += conta #variavel global que conta o numero de elementos apos '(' de modo a atualizar o j na funcao parse
             i += k #atualizar valor i para o elemento a seguir ao '(' que fecha este tuplo)
+            #as seguintes if statements controlam o overflow do i
             if i+1 < len(tokens) and tokens[i+1] == ')':
                 tup += (isNum(tokens[i]), )
-            elif i >= len(tokens):
-                tup += (isNum(tokens[len(tokens)-2]), )
+            elif i+1 >= len(tokens):
+                if i != len(tokens):
+                    flag_entrou += 2
+                temp = conta - flag_entrou
+                if (temp % 2 != 0 and i+1 == len(tokens)):
+                    temp -= 1
+                elif (temp % 2 != 0 and i+1 > len(tokens)):
+                    temp += 1
+                tup += (isNum(tokens[len(tokens)-temp]), )
+                if i == len(tokens): #caso especial em que o i = len(tokens), a flag que controla o token a adicionar no tuplo e iniciada depois
+                    flag_entrou += 2
                 i = len(tokens)-2
         else:
             tup += (isNum(tokens[i]), )
