@@ -121,8 +121,8 @@ def avalia(tuples):
         elif isinstance(tuples[i], float) and tuples[i-2] != 'define':
             temp = tuples[i]
             res = op[getop](res,temp)
-        elif tuples[i-1] in op and isinstance(tuples[i],str):
-            print("ERROR: Nao foi possivel avaliar a expressao '"+str(tuples[i-1])+str(tuples[i])+"' porque o elemento a seguir ao operador nao pode ser uma variavel")
+        elif tuples[i-1] in op and isinstance(tuples[i],str) and (isinstance(tuples[i+1], int) or isinstance(tuples[i+1], float)):
+            print("ERROR: Nao foi possivel avaliar a expressao '"+str(tuples[i-1])+str(tuples[i])+str(tuples[i+1])+"' porque o elemento a seguir ao operador nao pode ser uma variavel")
             exit()
         elif tuples[i] in op:
             getop = tuples[i]
